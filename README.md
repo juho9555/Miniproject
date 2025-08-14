@@ -8,7 +8,7 @@
 ### 바로가기
 - [피드백진행](./feedback/feedback.md)
 - [피드백문제개선방안](./docs/project_description.docx)
-- [기본HTML추가](./src/tests/index.html)
+- [기본HTML추가](./src/tests.py/index.html)
 
 ### 하드웨어
 - 웹캠
