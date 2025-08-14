@@ -3,6 +3,11 @@
 ## 프로젝트 설명  
 네이버지도의 길안내 이용 시 지하철 혼잡도 확인기능 추가하기  
 
+# 진행 상황
+- [피드백진행](./feedback/feedback.md)
+- [문서화진행](./docs/01-problem-discovery.md)
+- [프로토타입추가](./src/prototypes/index.html)
+
 <details>
 <summary>08.13(수)</summary>  
 
