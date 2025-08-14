@@ -5,7 +5,7 @@
 
 # 진행 상황
 - [피드백진행](./feedback/feedback.md)
-- [문서화진행](./docs/01-problem-discovery.md)
+- [문서화진행](./docs/project_description.docx)
 - [프로토타입추가](./src/prototypes/index.html)
 
 <details>
