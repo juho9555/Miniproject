@@ -15,7 +15,7 @@ def update_html(count, status):
     <head>
 
         <title>지하철 혼잡도 확인</title>
-        <meta http-equiv="refresh" content="5">
+        <meta http-equiv="refresh" content="1">
     </head>
 
     <body>
@@ -29,6 +29,8 @@ def update_html(count, status):
     </body>
     </html>
     """
+    with open(html_file, "w", encoding="utf-8") as f:
+        f.write(html_content)
 
 while True:
     ret, frame = cap.read()
