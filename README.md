@@ -4,9 +4,16 @@
 네이버지도의 길안내 이용 시 지하철 혼잡도 확인기능 추가하기  
 
 # 진행 상황
+
+### 바로가기
 - [피드백진행](./feedback/feedback.md)
 - [문서화진행](./docs/project_description.docx)
 - [프로토타입추가](./src/prototypes/index.html)
+
+### 하드웨어
+- 웹캠
+- 데스크 탑
+- 
 
 <details>
 <summary>08.13(수)</summary>  
