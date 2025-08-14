@@ -53,3 +53,96 @@
   
 </details> 
 <details> <summary>08.14(목)</summary>
+
+## 진행 상황
+- 목표 변경
+- 기본 목표:  
+"네이버지도의 길안내에 지하철 역 내 CCTV 영상을 기반으로 YOLO를 이용해 지하철을 기다리는 사람 수를 카운트하여 혼잡도 확인 기능을 추가하고 실제 제품 형식으로 반영하는 시스템"
+
+- 새 목표:  
+**웹캠에서 사람 수를 세어서 '지하철 혼잡도: 여유/보통/혼잡'을 간단한 HTML 페이지에 표시하기**
+
+## 목표
+### 1. 웹캠에서 사람 카운트하기
+- Yolo를 이용해 웹캠으로 사람이 인식되는지 확인
+- 화면에 몇명 인식되는지 표시하기
+- 
+
+### 2. 기본 HTML 틀 생성
+```
+<!DOCTYPE html>
+<html>
+<head>
+    <title>지하철 혼잡도 확인</title>
+</head>
+
+<body>
+    <h1>🚇 강남역 2호선</h1>
+    <div id="congestion">
+        <h2>현재 혼잡도: <span id="level">보통</span></h2>
+        <p>대기 인원: <span id="count">4</span>명</p>
+        <p>예상 대기시간: <span id="wait">3</span>분</p>
+    </div>
+</body>
+</html>
+```
+- ```<meta http-equiv="refresh" content="1">``` 구문을 추가해 새로고침 빈도를 1초로 갱신
+
+### 3. 사람 수에 따라 혼잡도 분류
+```
+if count <= 2:
+    cv2.putText(annotated_frame, f'not crowded', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+
+elif count <= 5:
+    cv2.putText(annotated_frame, f'moderate crowded', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        
+else:
+    cv2.putText(annotated_frame, f'crowded', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+```
+- 0~2명이면 not crowded(여유)
+- 3~5명이면 moderate crowded(보통)
+- 6명 이상이면 crowded(혼잡)
+  
+```
+if count <= 2:
+    status = 'not crowded'
+
+elif count <= 5:
+    status = 'moderate crowded'
+        
+else:
+    status = 'crowded'
+
+cv2.putText(annotated_frame, status, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+``` 
+- 이 처럼 혼잡도를 변수로 지정해 간단하게 표시가능
+- 하지만 색상을 변경하기 위해 전 방식을 사용
+
+### 4. 기본 HTML 틀에 혼잡도 적용시키기
+```
+html_file = 'index.html'
+
+def update_html(count, status):
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+
+        <title>지하철 혼잡도 확인</title>
+        <meta http-equiv="refresh" content="5">
+    </head>
+
+    <body>
+
+        <h1>🚇 강남역 2호선</h1>
+
+        <div id="congestion">
+            <h2>현재 혼잡도: <span id="level">{status}</span></h2>
+            <p>대기 인원: <span id="count">{count}</span>명</p>
+        </div>
+    </body>
+    </html>
+    """
+    with open(html_file, "w", encoding="utf-8") as f:
+        f.write(html_content)
+```
