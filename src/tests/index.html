@@ -2,18 +2,41 @@
     <!DOCTYPE html>
     <html>
     <head>
-
         <title>지하철 혼잡도 확인</title>
         <meta http-equiv="refresh" content="1">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+            #subway-info {
+                border: 1px solid #ccc;
+                padding: 15px;
+                border-radius: 10px;
+                width: 350px;
+            }
+            #congestion {
+                margin-top: 20px;
+                padding: 10px;
+                border-radius: 8px;
+                background-color: #f2f2f2;
+            }
+            #level {
+                font-weight: bold;
+                color: green
+            }
+        </style>
     </head>
-
     <body>
-
-        <h1>🚇 강남역 2호선</h1>
-
-        <div id="congestion">
-            <h2>현재 혼잡도: <span id="level">not crowded</span></h2>
-            <p>대기 인원: <span id="count">2</span>명</p>
+        <!-- 기존 첨부 이미지(열차 도착정보) -->
+        <div id="subway-info">
+            <h1>🚇 강남역 2호선</h1>
+            <img src="../../assets/map_example.PNG" alt="열차 도착 정보" width="330">
+            
+            <!-- 혼잡도 추가 부분 -->
+            <div id="congestion">
+                <h2>현재 혼잡도: <span id="level">혼잡하지않음</span></h2>
+                <p>대기 인원: <span id="count">1</span>명</p>
+            </div>
         </div>
     </body>
     </html>
