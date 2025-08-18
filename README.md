@@ -3,7 +3,6 @@
 ## 프로젝트 설명  
 네이버지도의 길안내 이용 시 지하철 혼잡도 확인기능 추가하기  
 
-# 진행 상황
 
 ### 바로가기
 - [피드백진행](./feedback/feedback.md)
@@ -14,6 +13,8 @@
 - 웹캠
 - 데스크 탑
 
+  
+### 진행상황
 <details>
 <summary>08.13(수)</summary>  
 
@@ -150,3 +151,14 @@ def update_html(count, status):
     update_html(count, status) # count = 사람 수, status = 혼잡도
 ```
 - 기본 틀인 index.html을 가져와 update_html을 통해 인원수와 혼잡도를 웹 창에 표시
+
+</details> 
+<details> <summary>08.18(월)</summary>  
+
+  
+## 오늘의 목표
+- 사람 인식 정확도 부분 수정
+- 혼잡도부분 한글로 수정
+- 웹 페이지에 지하철역 이미지 추가
+- CSS로 스타일링
+- 수정 전 코드와 비교해 before & after 확인하기
