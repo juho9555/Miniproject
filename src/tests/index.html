@@ -3,40 +3,56 @@
     <html>
     <head>
         <title>지하철 혼잡도 확인</title>
-        <meta http-equiv="refresh" content="1">
+        <!-- 1초마다 페이지 자동 새로고침 -->
+        <meta http-equiv="refresh" content="5">
         <style>
             body {
-                font-family: Arial, sans-serif;
+                font-family: Arial, sans-serif; /* 전체 폰트 설정 */
             }
-            #subway-info {
-                border: 1px solid #ccc;
-                padding: 15px;
-                border-radius: 10px;
-                width: 350px;
+            .tabs {
+                display: flex;        /* 가로로 정렬 */
+                gap: 10px;           /* 탭 간격 */
+                margin: 10px 0;      /* 상단 여백 */
             }
-            #congestion {
-                margin-top: 20px;
-                padding: 10px;
-                border-radius: 8px;
-                background-color: #f2f2f2;
+            .tab {
+                padding: 5px 12px;    /* 안쪽 여백 */
+                border-radius: 20px;  /* 둥근 모서리 */
+                border: 1px solid #ccc; /* 테두리 */
+                cursor: pointer;      /* 마우스 올리면 손가락 모양 */
             }
-            #level {
-                font-weight: bold;
-                color: green
+            .active {
+                background: #00c73c;  /* 선택된 탭 색 (네이버 녹색 계열) */
+                color: white;         /* 글자색 흰색 */
+                font-weight: bold;    /* 굵은 글씨 */
+                border: none;         /* 테두리 제거 */
+            }
+            .content {
+                margin-top: 10px;     /* 위쪽 여백 */
+                padding: 10px;        /* 안쪽 여백 */
+                border: 1px solid #ddd; /* 회색 테두리 */
+                border-radius: 8px;   /* 둥근 모서리 */
+            }
+            .status {
+                font-weight: bold;    /* 굵은 글씨 */
+                /* 혼잡도에 따라 색상 변경 */
+                color: green;
             }
         </style>
     </head>
     <body>
-        <!-- 기존 첨부 이미지(열차 도착정보) -->
-        <div id="subway-info">
-            <h1>🚇 강남역 2호선</h1>
-            <img src="../../assets/map_example.PNG" alt="열차 도착 정보" width="330">
-            
-            <!-- 혼잡도 추가 부분 -->
-            <div id="congestion">
-                <h2>현재 혼잡도: <span id="level">혼잡하지않음</span></h2>
-                <p>대기 인원: <span id="count">1</span>명</p>
-            </div>
+        <h1>🚇 강남역 2호선</h1>
+
+        <!-- 탭 메뉴 -->
+        <div class="tabs">
+            <div class="tab">실시간</div> <!-- 첫 번째 탭 -->
+            <div class="tab">시간표</div> <!-- 두 번째 탭 -->
+            <div class="tab active">혼잡도</div> <!-- 현재 선택된 탭 -->
+        </div>
+
+        <!-- 혼잡도 정보 출력 -->
+        <div class="content">
+            현재 혼잡도: <span class="status">혼잡하지않음</span><br>
+            대기 인원: 1명
         </div>
     </body>
     </html>
