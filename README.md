@@ -157,12 +157,15 @@ def update_html(count, status):
 
   
 ## 오늘의 목표
-- 사람 인식 정확도 부분 수정
-    - [오류](./assets/손을%20사람으로%20인식하는%20오류.png)
-    - [해결](./assets/config_error_solved.PNG)  
-- 혼잡도부분 한글로 수정
-- 웹 페이지에 지하철역 이미지 추가
-- CSS로 스타일링
-    - [1차 수정](./assets/webpage_edited1.PNG)
-    - [2차 수정](./assets/webpage_edited2.PNG)
-- 수정 전 코드와 비교해 before & after 확인하기
+
+### 사람 인식 정확도 부분 수정
+- [오류1](./assets/손을%20사람으로%20인식하는%20오류.png) : 손을 사람으로 인식하는 오류 발생
+- [해결1](./assets/config_error_solved.PNG) : 정확도 구문 추가 후 정확도가 0.8 즉 80퍼센트 이상일 경우에만 사람으로 인식
+- [오류2](./assets/오른쪽%20측면%20위.PNG) : 지하철 역 내의 cctv의 위치를 고려해 오른쪽 위에서 촬영한 결과 멀리 떨어진 사람의 인식기능이 약화됨
+- [해결2](./assets/yolo11s%20오른쪽%20위.PNG) : 기존 yolo11n모델보다 정확도가 향상된 yolo11s모델을 사용함으로써 오른쪽 위에서 촬영 했을 때에도 사람이 잘 인식됨
+- 개선 해야할 점 : 아주 멀리 떨어진 사람을 촬영했을 때 인식이 되는지 확인, CSV 데이터값을 연동시킬 수 있는지.
+
+#### CSS로 스타일링
+- [1차 수정](./assets/webpage_edited1.PNG)
+- [2차 수정](./assets/webpage_edited2.PNG)
+
