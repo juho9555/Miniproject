@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import cv2
 
-model = YOLO('yolo11n.pt')
+model = YOLO('yolo11s.pt')
 
 cap = cv2.VideoCapture(0)
 
@@ -22,7 +22,7 @@ def update_html(count, status):
             전체 페이지 스타일:
             - Inter 폰트 사용
             - 여백 제거
-            - 배경색 설정
+            - 배경색 설정q
             - flexbox를 사용하여 모든 내용을 중앙에 정렬
             */
             body {{
@@ -136,7 +136,7 @@ def update_html(count, status):
 while True:
     ret, frame = cap.read()
     if ret:
-        results = model(frame, classes=[0], conf=0.8, verbose= False) # 사람(class=0)만 탐지, conf(정확도) 0.6 이상만 카운트
+        results = model(frame, classes=[0], conf=0.6, verbose= False) # 사람(class=0)만 탐지, conf(정확도) 0.6 이상만 카운트
         annotated_frame = results[0].plot()
 
         # 사람 수 카운트하기
