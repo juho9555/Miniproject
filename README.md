@@ -158,8 +158,8 @@ def update_html(count, status):
   
 ## 오늘의 목표
 - 사람 인식 정확도 부분 수정
-- [오류](./assets/손을%20사람으로%20인식하는%20오류.png)
-- [해결](./assets/config_error_solved.PNG)
+    - [오류](./assets/손을%20사람으로%20인식하는%20오류.png)
+    - [해결](./assets/config_error_solved.PNG)  
 - 혼잡도부분 한글로 수정
 - 웹 페이지에 지하철역 이미지 추가
 - CSS로 스타일링

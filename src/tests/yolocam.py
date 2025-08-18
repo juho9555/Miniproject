@@ -18,8 +18,36 @@ def update_html(count, status):
         <!-- 1초마다 페이지 자동 새로고침 -->
         <meta http-equiv="refresh" content="5">
         <style>
+            /*
+            전체 페이지 스타일:
+            - Inter 폰트 사용
+            - 여백 제거
+            - 배경색 설정
+            - flexbox를 사용하여 모든 내용을 중앙에 정렬
+            */
             body {{
                 font-family: Arial, sans-serif; /* 전체 폰트 설정 */
+                margin: 0;  /* 외부 여백*/
+                padding: 0; /* 내부 여백*/
+                background-color: #f0f0f0; /* 배경색 연한 회색*/
+                display: flex; 
+                flex-direction: column; /*세로방향 정렬*/
+                align-items: center; /* 가로축 중앙 정렬*/
+                justify-content: center /* 세로축 중앙 정렬*/
+            }}
+            /*
+            주요 콘텐츠를 감싸는 컨테이너:
+            - 너비, 최대 너비, 배경색, 패딩, 둥근 모서리, 그림자 설정
+            - 모바일 및 데스크톱 환경 모두에 적합하도록 반응형으로 설계
+            */
+            .container {{
+                width: 90%; /* 화면 너비의 90%를 차지 */
+                max-width: 600px; /* 최대 너비를 600px로 제한하여 큰 화면에서 너무 넓어지는 것을 방지 */
+                background-color: #fff; /* 배경색을 흰색으로 지정 */
+                padding: 20px; /* 컨테이너 내부 여백: 테두리와 내용 사이의 공간 */
+                border-radius: 12px; /* 둥근 모서리를 만들어 부드러운 느낌을 줌 */
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과를 추가하여 입체감을 줌 */
+                margin-top: 20px; /* 컨테이너 외부 여백: 다른 요소와의 간격 */
             }}
             .tabs {{
                 display: flex;        /* 가로로 정렬 */
@@ -27,7 +55,7 @@ def update_html(count, status):
                 margin: 10px 0;      /* 상단 여백 */
             }}
             .tab {{
-                padding: 5px 12px;    /* 안쪽 여백 */
+                padding: 5px 12px;    
                 border-radius: 20px;  /* 둥근 모서리 */
                 border: 1px solid #ccc; /* 테두리 */
                 cursor: pointer;      /* 마우스 올리면 손가락 모양 */
