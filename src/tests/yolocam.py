@@ -49,6 +49,36 @@ def update_html(count, status):
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과를 추가하여 입체감을 줌 */
                 margin-top: 20px; /* 컨테이너 외부 여백: 다른 요소와의 간격 */
             }}
+
+            /*
+            페이지 상단 헤더 (역 이름, 역 아이콘) 스타일
+            */
+            .header {{
+                display: flex; /* 자식 요소들을 가로로 정렬 */
+                align-items: center; /* 수직 중앙 정렬 */
+                padding: 10px; /* 헤더 내부 여백 */
+            }}
+            
+            /* 역 번호 아이콘 스타일 (예: 2호선) */
+            .header-icon {{
+                width: 24px; /* 너비 24px */
+                height: 24px; /* 높이 24px */
+                border-radius: 50%; /* 50%로 설정하여 원형으로 만듦 */
+                background-color: #00c73c; /* 배경색을 네이버 녹색 계열로 지정 */
+                color: white; /* 글자색을 흰색으로 지정 */
+                display: flex; /* 자식 요소(숫자)를 유연하게 배치 */
+                align-items: center; /* 수직 중앙 정렬 */
+                justify-content: center; /* 수평 중앙 정렬 */
+                font-weight: bold; /* 글자를 굵게 만듦 */
+            }}
+
+            /* 역 이름 제목 스타일 */
+            h1 {{
+                font-size: 24px; /* 글자 크기 24px */
+                font-weight: bold; /* 글자를 굵게 만듦 */
+                color: #333; /* 글자색을 진한 회색으로 지정 */
+                margin: 0 0 0 10px; /* 위쪽 0, 오른쪽 0, 아래쪽 0, 왼쪽 10px의 외부 여백 */
+            }}
             .tabs {{
                 display: flex;        /* 가로로 정렬 */
                 gap: 10px;           /* 탭 간격 */
