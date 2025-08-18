@@ -7,13 +7,12 @@
 
 ### 바로가기
 - [피드백진행](./feedback/feedback.md)
-- [문서화진행](./docs/project_description.docx)
-- [프로토타입추가](./src/prototypes/index.html)
+- [피드백문제개선방안](./docs/project_description.docx)
+- [기본HTML추가](./src/tests.py/index.html)
 
 ### 하드웨어
 - 웹캠
 - 데스크 탑
-- 
 
 <details>
 <summary>08.13(수)</summary>  
@@ -58,6 +57,8 @@
 
 - 새 목표:  
 **웹캠에서 사람 수를 세어서 '지하철 혼잡도: 여유/보통/혼잡'을 간단한 HTML 페이지에 표시하기**
+
+- [전체코드](./src/tests.py/yolocam.py)
 
 ## 목표
 ### 1. 웹캠에서 사람 카운트하기
