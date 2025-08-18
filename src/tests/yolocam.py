@@ -35,10 +35,11 @@ def update_html(count, status):
 while True:
     ret, frame = cap.read()
     if ret:
-        results = model(frame, classes=[0], verbose= False) # 사람(class=0)만 탐지
+        results = model(frame, classes=[0], conf=0.6, verbose= False) # 사람(class=0)만 탐지, conf(정확도) 0.6 이상만 카운트
         annotated_frame = results[0].plot()
 
         # 사람 수 카운트하기
+        people = [box for box in results[0].boxes if box.conf[0] >= 0.6] # people을 리스트 형식으로 만들어 후처리를 유연하게 만듦
         count = len(results[0].boxes)
         cv2.putText(annotated_frame, f'People: {count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
