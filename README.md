@@ -157,8 +157,10 @@ def update_html(count, status):
 
   
 ## 오늘의 목표
-- 사람 인식 정확도 부분 수정
+- [사람 인식 정확도 부분 수정](./assets/config_error_solved.PNG)
 - 혼잡도부분 한글로 수정
 - 웹 페이지에 지하철역 이미지 추가
 - CSS로 스타일링
+    - [1차 수정](./assets/webpage_edited1.PNG)
+    - [2차 수정](./assets/webpage_edited2.PNG)
 - 수정 전 코드와 비교해 before & after 확인하기
