@@ -15,22 +15,31 @@ def update_html(count, status):
     <head>
         <title>지하철 혼잡도 확인</title>
         <meta http-equiv="refresh" content="1">
+
+        <!--CSS 스타일 정의-->
         <style>
+            /* 전체 페이지 폰트 설정*/
             body {{
                 font-family: Arial, sans-serif;
             }}
+
+            /*지하철 정보 전체 박스 스타일*/
             #subway-info {{
                 border: 1px solid #ccc;
                 padding: 15px;
                 border-radius: 10px;
                 width: 350px;
             }}
+
+            /*혼잡도 표시 영역 박스 스타일*/
             #congestion {{
                 margin-top: 20px;
                 padding: 10px;
                 border-radius: 8px;
                 background-color: #f2f2f2;
             }}
+
+            /*혼잡도 레벨 텍스트 스타일*/
             #level {{
                 font-weight: bold;
                 color: {"green" if status=="혼잡하지않음" else ("orange" if status=="보통" else "red")}
