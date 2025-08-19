@@ -188,3 +188,8 @@ def update_html(count, status):
     
     - [cctv 영상 확보](./assets/subway_cctv.mp4)
     - [ROI영역설정](./assets/Roi_cctv.PNG)
+    - [개선점](./docs/01-problem-discovery.md)
+
+강사님 피드백 : YOLO를 통해 사람을 다 파악하는 것은 불가능에 가까움. 그러므로 GRAYSCALE을 통한 색변환으로 밀도값을 더 정확히 구하는 것이 혼잡도 판별에 도움이 될 것.  
+  
+20일(수)에 YOLO대신 GRAYSCALE을 통한 혼잡도 표시하기 수행 예정
