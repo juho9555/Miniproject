@@ -151,8 +151,10 @@ while True:
     ret, frame = cap.read()
     if ret:
         
+        CONF_THRESHOLD = 0.4
+
         # YOLO 감지
-        results = model(frame, classes=[0], conf=0.1, verbose= False) # 사람(class=0)만 탐지, conf(정확도) 0.6 이상만 카운트
+        results = model(frame, classes=[0], conf=CONF_THRESHOLD, verbose= False) # 사람(class=0)만 탐지, conf(정확도) 0.6 이상만 카운트
         annotated_frame = results[0].plot()
 
         # ROI 마스크 생성
@@ -175,7 +177,7 @@ while True:
                 cv2.putText(annotated_frame, f'person {box.conf[0]:.1f}', (int(x1), int(y1)-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
         # 사람 수 카운트하기
-        people = [box for box in results[0].boxes if mask[int((box.xyxy[0][1]+box.xyxy[0][3])/2), int((box.xyxy[0][0]+box.xyxy[0][2])/2)] == 255] # people 리스트를 ROI기준으로 필터링
+        people = [box for box in results[0].boxes if box.conf[0] >= CONF_THRESHOLD and mask[int((box.xyxy[0][1]+box.xyxy[0][3])/2), int((box.xyxy[0][0]+box.xyxy[0][2])/2)] == 255] # people 리스트를 ROI기준으로 필터링
         
         count = len(results[0].boxes)
         cv2.putText(annotated_frame, f'People: {count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
