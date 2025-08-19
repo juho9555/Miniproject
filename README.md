@@ -169,3 +169,21 @@ def update_html(count, status):
 - [1차 수정](./assets/webpage_edited1.PNG)
 - [2차 수정](./assets/webpage_edited2.PNG)
 
+</details>
+
+<details>
+<summary>08.19(화)</summary>  
+
+## 오늘의 목표
+
+### 승하차인원 CSV파일을 통해 혼잡도 판단
+
+1. CSV 파일에서 시간대별·역별 승하차 인원 통계값을 준비
+
+2. 실시간의 현재 시각/요일을 추출
+
+3. 해당 시간/요일/역의 csv 데이터 추출, 평균 구하기
+
+4. YOLO 감지값과 평균값을 비교해 혼잡도를 계산
+
+5. 웹(HTML) 등에 결과 반영
