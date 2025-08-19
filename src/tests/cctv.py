@@ -151,7 +151,7 @@ while True:
     ret, frame = cap.read()
     if ret:
         
-        CONF_THRESHOLD = 0.4
+        CONF_THRESHOLD = 0.1
 
         # YOLO 감지
         results = model(frame, classes=[0], conf=CONF_THRESHOLD, verbose= False) # 사람(class=0)만 탐지, conf(정확도) 0.6 이상만 카운트
@@ -179,24 +179,29 @@ while True:
         # 사람 수 카운트하기
         people = [box for box in results[0].boxes if box.conf[0] >= CONF_THRESHOLD and mask[int((box.xyxy[0][1]+box.xyxy[0][3])/2), int((box.xyxy[0][0]+box.xyxy[0][2])/2)] == 255] # people 리스트를 ROI기준으로 필터링
         
-        count = len(results[0].boxes)
+        count = len(people)
         cv2.putText(annotated_frame, f'People: {count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # 혼잡도 분류하기
-        if count <= 10:
+        roi_area = cv2.contourArea(roi_corners) # 컨투어로 roi안의 픽셀 구하기
+        density = count / roi_area # 사람 / 픽셀
+
+        if density <= 0.0001:
             status_eng = 'not crowded'
             status_kor = '혼잡하지않음' # html용 혼잡도 한글 지정
-            cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+            color = (255, 0, 0)
 
-        elif count <= 20:
+        elif density <= 0.0005:
             status_eng = 'moderate crowded'
             status_kor = '보통'
-            cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        
+            color = (0, 255, 0)
+
         else:
             status_eng = 'crowded'
             status_kor = '혼잡함'
-            cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            color = (0, 0, 255)
+
+        cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
             
         update_html(count, status_kor)
 
