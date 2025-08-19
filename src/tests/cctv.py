@@ -149,12 +149,12 @@ while True:
         cv2.putText(annotated_frame, f'People: {count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # 혼잡도 분류하기
-        if count <= 2:
+        if count <= 10:
             status_eng = 'not crowded'
             status_kor = '혼잡하지않음' # html용 혼잡도 한글 지정
             cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
-        elif count <= 5:
+        elif count <= 20:
             status_eng = 'moderate crowded'
             status_kor = '보통'
             cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
