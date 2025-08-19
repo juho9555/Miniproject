@@ -184,22 +184,28 @@ while True:
 
         # 혼잡도 분류하기
         roi_area = cv2.contourArea(roi_corners) # 컨투어로 roi안의 픽셀 구하기
-        density = count / roi_area # 사람 / 픽셀
 
-        if density <= 0.0001:
-            status_eng = 'not crowded'
-            status_kor = '혼잡하지않음' # html용 혼잡도 한글 지정
-            color = (255, 0, 0)
+        if roi_area < 50000: # 작은 ROI -> count 기준
+            
+            if count <= 10:
+                status_eng, status_kor, color = 'not crowded', '혼잡하지 않음', (0, 0, 255)
 
-        elif density <= 0.0005:
-            status_eng = 'moderate crowded'
-            status_kor = '보통'
-            color = (0, 255, 0)
+            elif count <= 20:
+                status_eng, status_kor, color = 'moderate crowded', '보통', (0, 255, 0)
 
-        else:
-            status_eng = 'crowded'
-            status_kor = '혼잡함'
-            color = (0, 0, 255)
+            else:
+                status_eng, status_kor, color = 'crowded', '혼잡함', (255, 0, 0)
+
+        else: # 큰 ROI -> density 기준
+            density = count / roi_area
+            if density <= 0.0001:
+                status_eng, status_kor, color = 'not crowded', '혼잡하지 않음', (0, 0, 255)
+            
+            elif density <= 0.0005:
+                status_eng, status_kor, color = 'moderate crowded', '보통', (0, 255, 0)
+            
+            else:
+                status_eng, status_kor, color = 'crowded', '혼잡함', (255, 0, 0)
 
         cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
             
