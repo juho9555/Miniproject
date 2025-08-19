@@ -175,7 +175,8 @@ while True:
                 cv2.putText(annotated_frame, f'person {box.conf[0]:.1f}', (int(x1), int(y1)-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
         # 사람 수 카운트하기
-        people = [box for box in results[0].boxes if box.conf[0] >= 0.1] # people을 리스트 형식으로 만들어 후처리를 유연하게 만듦
+        people = [box for box in results[0].boxes if mask[int((box.xyxy[0][1]+box.xyxy[0][3])/2), int((box.xyxy[0][0]+box.xyxy[0][2])/2)] == 255] # people 리스트를 ROI기준으로 필터링
+        
         count = len(results[0].boxes)
         cv2.putText(annotated_frame, f'People: {count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
