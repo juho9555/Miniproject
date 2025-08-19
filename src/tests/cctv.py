@@ -13,7 +13,7 @@ cap = cv2.VideoCapture(video_path)
 # HTML 파일 경로
 html_file = 'index.html'
 
-def update_html(count, status):
+def update_html(count, status, color_rgb):
     # HTML 콘텐츠를 파이썬 f-string 으로 생성
     html_content = f"""
     <!DOCTYPE html>
@@ -151,7 +151,7 @@ while True:
     ret, frame = cap.read()
     if ret:
         
-        CONF_THRESHOLD = 0.1
+        CONF_THRESHOLD = 0.1 # 임계변수 값 설정 (정확도)
 
         # YOLO 감지
         results = model(frame, classes=[0], conf=CONF_THRESHOLD, verbose= False) # 사람(class=0)만 탐지, conf(정확도) 0.6 이상만 카운트
@@ -162,7 +162,7 @@ while True:
             mask = np.zeros(frame.shape[:2], dtype=np.uint8)
             cv2.fillPoly(mask, roi_corners, 255)
 
-        count = 0
+        count = 0 # 사람 수 초기화
 
         annotated_frame = frame.copy()
 
@@ -173,8 +173,8 @@ while True:
 
             if mask[cy, cx] == 255:
                 count += 1
-                cv2.rectangle(annotated_frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
-                cv2.putText(annotated_frame, f'person {box.conf[0]:.1f}', (int(x1), int(y1)-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+                cv2.rectangle(annotated_frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 1)
+                cv2.putText(annotated_frame, f'person {box.conf[0]:.1f}', (int(x1), int(y1)-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
 
         # 사람 수 카운트하기
         people = [box for box in results[0].boxes if box.conf[0] >= CONF_THRESHOLD and mask[int((box.xyxy[0][1]+box.xyxy[0][3])/2), int((box.xyxy[0][0]+box.xyxy[0][2])/2)] == 255] # people 리스트를 ROI기준으로 필터링
@@ -185,31 +185,33 @@ while True:
         # 혼잡도 분류하기
         roi_area = cv2.contourArea(roi_corners) # 컨투어로 roi안의 픽셀 구하기
 
-        if roi_area < 50000: # 작은 ROI -> count 기준
+        if roi_area < 70000: # 작은 ROI -> count 기준
             
             if count <= 10:
-                status_eng, status_kor, color = 'not crowded', '혼잡하지 않음', (0, 0, 255)
+                status_eng, status_kor, color_bgr = 'not crowded', '혼잡하지 않음', (255, 0, 0)
 
             elif count <= 20:
-                status_eng, status_kor, color = 'moderate crowded', '보통', (0, 255, 0)
+                status_eng, status_kor, color_bgr = 'moderate crowded', '보통', (0, 255, 0)
 
             else:
-                status_eng, status_kor, color = 'crowded', '혼잡함', (255, 0, 0)
+                status_eng, status_kor, color_bgr = 'crowded', '혼잡함', (0, 0, 255)
 
         else: # 큰 ROI -> density 기준
             density = count / roi_area
             if density <= 0.0001:
-                status_eng, status_kor, color = 'not crowded', '혼잡하지 않음', (0, 0, 255)
+                status_eng, status_kor, color_bgr = 'not crowded', '혼잡하지 않음', (255, 0, 0)
             
             elif density <= 0.0005:
-                status_eng, status_kor, color = 'moderate crowded', '보통', (0, 255, 0)
+                status_eng, status_kor, color_bgr = 'moderate crowded', '보통', (0, 255, 0)
             
             else:
-                status_eng, status_kor, color = 'crowded', '혼잡함', (255, 0, 0)
+                status_eng, status_kor, color_bgr = 'crowded', '혼잡함', (0, 0, 255)
 
-        cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
+        cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, color_bgr, 2)
             
-        update_html(count, status_kor)
+        # HTML에 업로드
+        color_rgb = color_bgr[::-1] # 순서 뒤집기
+        update_html(count, status_kor, color_rgb)
 
         cv2.polylines(annotated_frame, roi_corners, isClosed=True, color=(0, 0, 255))
 
