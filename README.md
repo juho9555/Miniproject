@@ -183,3 +183,8 @@ def update_html(count, status):
 2. ROI안의 사람만 대기자로 설정
 
 3. 화질 개선해서 대기자 식별 기능 향상
+
+- [피드백](./feedback/feedback.md)
+    
+    - [cctv 영상 확보](./assets/subway_cctv.mp4)
+    - [ROI영역설정](./assets/Roi_cctv.PNG)
