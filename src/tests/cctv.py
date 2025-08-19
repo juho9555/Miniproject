@@ -145,22 +145,37 @@ roi_corners = np.array([[
     (520, 720)
 ]], dtype=np.int32)
 
+mask = None
+
 while True:
     ret, frame = cap.read()
     if ret:
         
         # YOLO 감지
-        results = model(frame, classes=[0], conf=0.2, verbose= False) # 사람(class=0)만 탐지, conf(정확도) 0.6 이상만 카운트
+        results = model(frame, classes=[0], conf=0.1, verbose= False) # 사람(class=0)만 탐지, conf(정확도) 0.6 이상만 카운트
         annotated_frame = results[0].plot()
 
+        # ROI 마스크 생성
+        if mask is None:
+            mask = np.zeros(frame.shape[:2], dtype=np.uint8)
+            cv2.fillPoly(mask, roi_corners, 255)
+
         count = 0
+
+        annotated_frame = frame.copy()
+
         for box in results[0].boxes:
             x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
             cx = int((x1 + x2) / 2)
             cy = int((y1 + y2) / 2)
 
+            if mask[cy, cx] == 255:
+                count += 1
+                cv2.rectangle(annotated_frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
+                cv2.putText(annotated_frame, f'person {box.conf[0]:.1f}', (int(x1), int(y1)-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
         # 사람 수 카운트하기
-        people = [box for box in results[0].boxes if box.conf[0] >= 0.2] # people을 리스트 형식으로 만들어 후처리를 유연하게 만듦
+        people = [box for box in results[0].boxes if box.conf[0] >= 0.1] # people을 리스트 형식으로 만들어 후처리를 유연하게 만듦
         count = len(results[0].boxes)
         cv2.putText(annotated_frame, f'People: {count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
@@ -183,7 +198,6 @@ while True:
         update_html(count, status_kor)
 
         cv2.polylines(annotated_frame, roi_corners, isClosed=True, color=(0, 0, 255))
-
 
         # Roi 표시
         cv2.imshow('ROI detection', annotated_frame)
