@@ -1,6 +1,7 @@
 from ultralytics import YOLO
 import cv2
 import os
+import numpy as np
 
 model = YOLO('yolo11s.pt')
 
@@ -136,36 +137,60 @@ def update_html(count, status):
     with open(html_file, "w", encoding="utf-8") as f:
         f.write(html_content)
 
+# roi 설정
+roi_corners = np.array([[
+    (300, 1000),
+    (350, 500),
+    (900, 500),
+    (950, 1000)
+]], dtype=np.int32)
+
+x1, y1 = 300, 500
+x2, y2 = 950, 1000
 
 while True:
     ret, frame = cap.read()
     if ret:
-        results = model(frame, classes=[0], conf=0.6, verbose= False) # 사람(class=0)만 탐지, conf(정확도) 0.6 이상만 카운트
-        annotated_frame = results[0].plot()
+        
+        # Roi 마스크 설정
+        mask = np.zeros_like(frame)
+        cv2.fillPoly(mask, roi_corners, (255, 255, 255))
+        roi_frame = cv2.bitwise_and(frame, mask)
+        
+        
+        results = model(roi_frame, classes=[0], conf=0.6, verbose= False) # 사람(class=0)만 탐지, conf(정확도) 0.6 이상만 카운트
+        annotated_roi = results[0].plot()
+
+        # Roi 리사이즈
+        roi_h, roi_w = y2 - y1, x2 - x1
+        annotated_roi_resized = cv2.resize(annotated_roi, (roi_w, roi_h))
 
         # 사람 수 카운트하기
         people = [box for box in results[0].boxes if box.conf[0] >= 0.8] # people을 리스트 형식으로 만들어 후처리를 유연하게 만듦
         count = len(results[0].boxes)
-        cv2.putText(annotated_frame, f'People: {count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        cv2.putText(annotated_roi, f'People: {count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # 혼잡도 분류하기
         if count <= 10:
             status_eng = 'not crowded'
             status_kor = '혼잡하지않음' # html용 혼잡도 한글 지정
-            cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+            cv2.putText(annotated_roi, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
         elif count <= 20:
             status_eng = 'moderate crowded'
             status_kor = '보통'
-            cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            cv2.putText(annotated_roi, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         
         else:
             status_eng = 'crowded'
             status_kor = '혼잡함'
-            cv2.putText(annotated_frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            cv2.putText(annotated_roi, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
             
         update_html(count, status_kor)
-        cv2.imshow('Yolo ', annotated_frame)
+
+        frame[y1:y2, x1:x2] = annotated_roi_resized
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+        cv2.imshow('Yolo ', frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
