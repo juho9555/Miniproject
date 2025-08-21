@@ -1,7 +1,118 @@
-# 미니프로젝트
+# 미니프로젝트: 지하철 혼잡도 판별 시스템
 
 ## 프로젝트 설명  
-네이버지도의 길안내 이용 시 지하철 혼잡도 확인기능 추가하기  
+**지하철의 CCTV 영상을 기반으로 대기 인원을 추정하고 혼잡도를 시각적으로 나타내는 시스템**
+
+- OpenCV의 **배경 제거**와 **ROI(Region of Interest)** 기법을 이용하여 특정 구역의 인원 밀도를 계산  
+- 계산된 밀도를 바탕으로 **혼잡도 상태**를 판별  
+- 결과를 **HTML 페이지**로 실시간 업데이트  
+  
+> 네이버 지도와 같은 길안내 서비스에 **실시간 지하철 혼잡도 정보를 제공**하는 기능을 목표로 합니다.  
+
+## 프로젝트 진행 배경
+### 초기 계획 (웹캠 기반)
+- 처음에는 **웹캠을 통해 대기자 수를 직접 인식**하여 혼잡도를 판별하려 했음  
+- 그러나 웹캠 환경에서는 **표본 인구수가 너무 적고, 실제 지하철 상황을 반영하기 어려움**  
+
+### 접근 변경 (지하철 CCTV + YOLO)
+- 실제 지하철 CCTV 영상을 기반으로 **YOLO 모델**을 활용하여 대기자 수를 직접 카운트  
+- 그러나 YOLO는 **지하철 내 대기자와 단순 통행객을 구분하기 어려움**, 인식 오류가 잦음  
+- 손, 다리, 어깨 일부를 사람으로 잘못 인식하는 문제 발생  
+
+### 최종 접근 (GRAYSCALE + 밀도 기반)
+- YOLO 대신 **영상 밀도(density) 기반 추정 방식**으로 전환  
+- **전처리 과정**:
+  1. GRAYSCALE 변환  
+  2. 가우시안 블러 (Gaussian Blur) 적용  
+  3. 모폴로지 연산 (열림, 닫힘)으로 노이즈 제거  
+  4. 배경 제거(MOG2) 후 ROI(관심 영역) 마스크 적용  
+
+- **밀도 계산 로직**:
+  - ROI 영역 내 흰색 픽셀의 비율(`white_pixels / roi_total_pixels`)을 계산  
+  - 혼잡도 구간을 **세분화**하고, 각 구간에 맞게 **대기 인원 추정식** 적용  
+  - 결과를 HTML에 실시간 반영  
+
+**이로써 YOLO의 한계를 보완하면서도 실제 혼잡도를 비교적 안정적으로 추정할 수 있었음.**  
+
+## 구동 방법  
+
+```bash
+# 1. 가상환경 실행 (선택)
+python -m venv venv
+source venv/Scripts/activate   # (Windows)
+source venv/bin/activate       # (Mac/Linux)
+
+# 2. 필수 라이브러리 설치
+pip install opencv-python numpy
+
+# 3. 실행 (최종 코드 실행)
+cd src/final
+python final_congestion.py
+```
+
+이후 index.html 파일이 자동 갱신되며, 브라우저에서 혼잡도를 확인할 수 있음
+
+## 필수 설치
+
+- Python 3.10+
+- OpenCV: ```pip install opencv-python```
+- NumPy: ```pip install opencv-python numpy```
+
+## 파일구조
+```
+Mini_project/
+│
+├── assets/                    
+│   └── subway_cctv.mp4        # 실제 테스트에 사용한 CCTV 영상
+│
+├── feedback/                  
+│   └── feedback.md            # 날짜별 피드백 기록
+│
+├── docs/                      
+│   ├── 01-problem-discovery.md
+│   └── project_description.docx
+│
+├── src/
+│   ├── tests/                 # 중간 테스트 코드
+│   └── final/
+│       ├── final_congestion.py  # 최종 코드
+│       └── index.html           # 혼잡도 결과 출력
+│
+└── README.md
+```
+
+## 오류 내용 및 해결
+
+- 사람 인식 오류 (손, 어깨 등을 사람으로 잘못 인식)
+    - 원인: YOLO 모델이 작은 물체까지 탐지 -> 손/다리를 사람으로 잘못 인식
+    - 해결: ```conf=0.8```이상의 신뢰도만 인정하도록 수정
+
+- ROI(관심영역)외 인원까지 대기자로 인식
+    - 원인: 승강장 전체를 인식해 지나가는 사람까지 포함됨
+    - 해결: ```cv2.fillPoly()```를 사용하여 ROI 영역을 마스크 처리 -> ROI 내부 픽셀만 분석
+
+- 혼잡도와 웹페이지 인원 수 불일치
+    - 원인: 밀도 계산 로직이 단순하여 실제 인원과 오차 발생
+    - 해결: 혼잡도 구간을 세분화하고 인원 추정식을 개선
+    ```
+    if density < 0.001:      # 혼잡하지 않음
+    elif density <= 0.18:    # 매우 한산
+        elif density <= 0.25:    # 한산
+    elif density <= 0.35:    # 보통
+    elif density <= 0.45:    # 약간 혼잡
+    else:                    # 매우 혼잡
+    ```
+
+## 개선 및 발전 방향
+- **YOLOv11 + OpenCV 결합**: 현재는 밀도 기반이므로, 정확한 인원수 카운트를 위해 YOLO 모델과 결합 가능
+
+- **CSV/DB 연동**: 혼잡도 데이터를 저장하여 시간대별 패턴 분석 → 네이버 지도 Mock-up 반영
+
+- **실시간 CCTV 연동**: 샘플 영상 대신 실제 지하철 CCTV 서버 스트리밍 적용
+
+- **UI 개선**: 단순 HTML → Flask/Django 기반 웹 서버로 발전 가능
+
+- **모바일 연동**: API 형태로 혼잡도 데이터를 제공하여 앱 서비스에 활용 가능
 
 
 ### 바로가기
@@ -9,11 +120,6 @@
 - [피드백문제개선방안](./docs/project_description.docx)
 - [기본HTML추가](./src/tests.py/index.html)
 
-### 하드웨어
-- 웹캠
-- 데스크 탑
-
-  
 ### 진행상황
 <details>
 <summary>08.13(수)</summary>  
@@ -193,3 +299,21 @@ def update_html(count, status):
 강사님 피드백 : YOLO를 통해 사람을 다 파악하는 것은 불가능에 가까움. 그러므로 GRAYSCALE을 통한 색변환으로 밀도값을 더 정확히 구하는 것이 혼잡도 판별에 도움이 될 것.  
   
 20일(수)에 YOLO대신 GRAYSCALE을 통한 혼잡도 표시하기 수행 예정
+
+</details>
+
+<details><summary>08.21(목)</summary>
+
+## 오늘의 목표
+
+- GRAYSCALE을 통해 혼잡도 확인하기
+
+- 실제 대기 인원 수와 웹페이지에 표시되는 대기 인원 수의 정확도 향상 시키기
+
+- 이동 평균 구문(smoothed_count)를 추가해 프레임 변동과 대기 인원 추정치를 안정화 시키기
+
+- github readme 파일 총 정리하기
+
+- 발표 자료 만들기
+
+</details>
