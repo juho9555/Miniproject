@@ -17,7 +17,7 @@ def update_html(count, status, color_rgb):
     <html>
     <head>
         <title>지하철 혼잡도 확인</title>
-        <meta http-equiv="refresh" content="1">
+        <meta http-equiv="refresh" content="2">
         <style>
             body {{
                 font-family: Arial, sans-serif;
@@ -159,15 +159,16 @@ while True:
         density = 0
 
     status_eng, status_kor, color_bgr = '', '', (0, 0, 0)
-    if density <= 0.01:
+    if density <= 0.007:
         status_eng, status_kor, color_bgr = 'not crowded', '혼잡하지 않음', (255, 0, 0)
-    elif density <= 0.08:
+        estimated_count = int(density * 700)
+    elif density <= 0.07:
         status_eng, status_kor, color_bgr = 'moderate crowded', '보통', (0, 255, 0)
+        estimated_count = int(density * 500 + 5)
     else:
         status_eng, status_kor, color_bgr = 'crowded', '혼잡함', (0, 0, 255)
+        estimated_count = int(density * 300)
 
-    max_people = 500  # ROI에 최대 수용 가능 인원 (임의 값)
-    estimated_count = int(density * max_people)
 
     cv2.putText(frame, f'Density: {density:.4f}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
     cv2.putText(frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, color_bgr, 2)
