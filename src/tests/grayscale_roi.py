@@ -166,11 +166,14 @@ while True:
     else:
         status_eng, status_kor, color_bgr = 'crowded', '혼잡함', (0, 0, 255)
 
+    max_people = 500  # ROI에 최대 수용 가능 인원 (임의 값)
+    estimated_count = int(density * max_people)
+
     cv2.putText(frame, f'Density: {density:.4f}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
     cv2.putText(frame, status_eng, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, color_bgr, 2)
     
     color_rgb = color_bgr[::-1]
-    update_html(int(density * 1000), status_kor, color_rgb) 
+    update_html(estimated_count, status_kor, color_rgb)
 
     cv2.polylines(frame, roi_corners, isClosed=True, color=(0, 0, 255), thickness=2)
     
