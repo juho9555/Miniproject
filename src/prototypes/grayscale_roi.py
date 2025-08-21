@@ -157,6 +157,9 @@ while True:
         density = white_pixels / total_pixels
     else:
         density = 0
+    
+    smoothed_count = 0
+    alpha = 0.3
 
     # 혼잡도 계산
     if density < 0.001:
@@ -165,12 +168,15 @@ while True:
     elif density <= 0.007:
         status_eng, status_kor, color_bgr = 'not crowded', '혼잡하지 않음', (255, 0, 0)
         estimated_count = int(density * 300 + 5)
+        smoothed_count = int(alpha * estimated_count + (1 - alpha) * smoothed_count)
     elif density <= 0.1:
         status_eng, status_kor, color_bgr = 'moderate crowded', '보통', (0, 255, 0)
         estimated_count = int(density * 300 + 10)
+        smoothed_count = int(alpha * estimated_count + (1 - alpha) * smoothed_count)
     else:
         status_eng, status_kor, color_bgr = 'crowded', '혼잡함', (0, 0, 255)
         estimated_count = int(density * 250 + 15)
+        smoothed_count = int(alpha * estimated_count + (1 - alpha) * smoothed_count)
 
     # 혼잡도 표시
     cv2.putText(frame, f'Density: {density:.4f}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
@@ -178,11 +184,11 @@ while True:
     color_rgb = color_bgr[::-1]
 
     # 웹페이지에 업데이트
-    update_html(estimated_count, status_kor, color_rgb)
+    update_html(smoothed_count, status_kor, color_rgb)
 
     # ROI영역 표시
     cv2.polylines(frame, roi_corners, isClosed=True, color=(0, 0, 255), thickness=2)
-    
+
     cv2.imshow('ROI detection', frame)
 
     # 딜레이 추가 
