@@ -116,9 +116,11 @@ Mini_project/
 
 
 ### 바로가기
+- [실행코드](./src/final/final_congestion.py)
+- [웹페이지](./src/final/index.html)
 - [피드백진행](./feedback/feedback.md)
-- [피드백문제개선방안](./docs/project_description.docx)
-- [기본HTML추가](./src/tests.py/index.html)
+- [피드백문제개선방안](./docs/01-problem-discovery.md)
+- [사용영상](./assets/subway_cctv.mp4)
 
 ### 진행상황
 <details>
